@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="TradeSim Pro — a virtual stock trading terminal powered by a controlled synthetic market dataset.">
+  <title>TradeSim Pro — Virtual Trading Terminal</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="noise"></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">TS</div>
+      <div><div class="brand-name">TradeSim <span>PRO</span></div><div class="brand-sub">Virtual Equity Terminal</div></div>
+    </div>
+    <div class="top-meta">
+      <div class="market-live"><i></i><span>SIMULATION LIVE</span></div>
+      <div class="dataset-chip"><b id="recordCount">1,950</b> market points</div>
+      <button class="icon-btn" id="resetBtn" title="Reset demo account" aria-label="Reset demo account">↻</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow"><span>CONTROLLED MARKET</span><em>NO REAL MONEY</em></div>
+        <h1>A trading terminal built for <span>practice, analysis &amp; proof.</span></h1>
+        <p>Explore a deterministic 10-stock market dataset, travel to an exact historical timestamp, execute paper orders, and see portfolio economics update instantly.</p>
+        <div class="hero-actions">
+          <button class="primary-hero" id="focusTrade">Open Order Ticket <span>↗</span></button>
+          <div class="mini-stat"><strong>₹10L</strong><span>Starting capital</span></div>
+          <div class="mini-stat"><strong>10</strong><span>Instruments</span></div>
+          <div class="mini-stat"><strong>30m</strong><span>Price interval</span></div>
+        </div>
+      </div>
+      <div class="account-card">
+        <div class="card-top"><span>DEMO ACCOUNT</span><span class="account-id">USER · 001</span></div>
+        <div class="balance-label">Available buying power</div>
+        <div class="balance" id="heroCash">₹10,00,000.00</div>
+        <div class="balance-row"><span>Portfolio equity</span><strong id="heroEquity">₹10,00,000.00</strong></div>
+        <div class="balance-row"><span>Total P/L</span><strong id="heroPnl">₹0.00</strong></div>
+        <div class="progress"><span id="equityProgress"></span></div>
+        <div class="card-foot"><span>Virtual funds only</span><span>Protected demo state</span></div>
+      </div>
+    </section>
+
+    <section class="metric-grid">
+      <article class="metric-card"><div class="metric-icon blue">◈</div><div><span>Net liquidation</span><strong id="totalValue">₹10,00,000.00</strong><small id="totalPnl">+0.00%</small></div></article>
+      <article class="metric-card"><div class="metric-icon cyan">◌</div><div><span>Market exposure</span><strong id="marketValue">₹0.00</strong><small id="exposurePct">0.00% of equity</small></div></article>
+      <article class="metric-card"><div class="metric-icon green">↗</div><div><span>Realized P/L</span><strong id="realizedPnl">₹0.00</strong><small>Closed positions</small></div></article>
+      <article class="metric-card"><div class="metric-icon violet">⌁</div><div><span>Unrealized P/L</span><strong id="unrealizedPnl">₹0.00</strong><small>Open positions</small></div></article>
+    </section>
+
+    <section class="terminal-grid">
+      <aside class="panel watch-panel">
+        <div class="panel-header"><div><span class="section-kicker">MARKET</span><h2>Watchlist</h2></div><span class="count-pill" id="stockCount">10</span></div>
+        <div class="search-wrap"><span>⌕</span><input id="stockSearch" placeholder="Search symbol or company" autocomplete="off"></div>
+        <div class="watch-list" id="stockList"></div>
+        <div class="watch-footer"><span>Dataset range</span><strong id="datasetRange">—</strong></div>
+      </aside>
+
+      <section class="panel chart-panel">
+        <div class="panel-header chart-head">
+          <div><span class="section-kicker">INSTRUMENT</span><h2 id="selectedStock">Reliance Industries <small>RELIANCE</small></h2></div>
+          <div class="quote-block"><strong id="selectedPrice">₹0.00</strong><span id="priceChange" class="change neutral">—</span></div>
+        </div>
+        <div class="selector-bar">
+          <label><span>Date</span><select id="dateSelect"></select></label>
+          <label><span>Time</span><select id="timeSelect"></select></label>
+          <button id="replayBtn" class="replay-btn">▶ <span>Replay</span></button>
+          <div class="market-state"><i></i> Dataset session</div>
+        </div>
+        <div class="ohlc-row">
+          <div><span>OPEN</span><b id="dayOpen">—</b></div><div><span>HIGH</span><b id="dayHigh">—</b></div><div><span>LOW</span><b id="dayLow">—</b></div><div><span>POINTS</span><b id="sessionPoints">—</b></div>
+        </div>
+        <div class="chart-wrap"><svg id="priceChart" viewBox="0 0 1000 360" preserveAspectRatio="none" aria-label="Intraday price chart"></svg><div id="chartTooltip" class="chart-tooltip"></div></div>
+        <div class="chart-axis"><span id="axisStart">—</span><span>INTRADAY PRICE PATH</span><span id="axisEnd">—</span></div>
+      </section>
+    </section>
+
+    <section class="lower-grid" id="tradeSection">
+      <section class="panel order-panel">
+        <div class="panel-header"><div><span class="section-kicker">EXECUTION</span><h2>Order ticket</h2></div><span class="secure-chip">PAPER ONLY</span></div>
+        <div class="side-tabs"><button class="side-tab active" data-side="BUY">BUY</button><button class="side-tab sell" data-side="SELL">SELL</button></div>
+        <div class="order-instrument"><div class="ticker-box"><span id="orderSymbol">RELIANCE</span><small>Selected timestamp price</small></div><strong id="orderPrice">₹0.00</strong></div>
+        <label class="field"><span>Quantity <em>whole shares</em></span><div class="qty-control"><button data-step="-1">−</button><input id="quantity" type="number" min="1" step="1" value="10"><button data-step="1">+</button></div></label>
+        <div class="estimate"><div><span>Estimated order value</span><strong id="estimatedValue">₹0.00</strong></div><div><span>Execution</span><strong>Instant / dataset</strong></div></div>
+        <button class="execute-btn" id="placeOrder">Buy RELIANCE</button>
+        <div id="orderMessage" class="order-message"></div>
+        <div class="rule"><span>✓</span> Orders use the exact selected date/time price.</div>
+      </section>
+
+      <section class="panel portfolio-panel">
+        <div class="panel-header"><div><span class="section-kicker">RISK &amp; RETURNS</span><h2>Portfolio</h2></div><span id="positionCount" class="count-pill">0 positions</span></div>
+        <div class="portfolio-summary"><div><span>Invested cost</span><strong id="investedCost">₹0.00</strong></div><div><span>Cash</span><strong id="portfolioCash">₹10,00,000.00</strong></div><div><span>Return</span><strong id="portfolioReturn">0.00%</strong></div></div>
+        <div id="positions" class="positions"></div>
+      </section>
+    </section>
+
+    <section class="panel transactions-panel">
+      <div class="panel-header"><div><span class="section-kicker">AUDIT TRAIL</span><h2>Transaction history</h2></div><span class="muted-badge">Latest first</span></div>
+      <div class="table-scroll"><table><thead><tr><th>Side</th><th>Instrument</th><th>Qty</th><th>Price</th><th>Market time</th><th>Value</th></tr></thead><tbody id="transactions"><tr><td colspan="6" class="empty">No transactions yet. Your first paper trade will appear here.</td></tr></tbody></table></div>
+    </section>
+
+    <footer><span>TradeSim Pro</span> · Synthetic educational simulator · No real trades · No real money · Market data is deterministic assignment data</footer>
+  </main>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
